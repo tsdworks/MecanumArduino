@@ -1,7 +1,0 @@
-{
-    "board": "arduino:avr:diecimila",
-    "configuration": "cpu=atmega328",
-    "sketch": "Mecanum.ino",
-    "port": "COM5",
-    "programmer": "AVRISP mkII"
-}
