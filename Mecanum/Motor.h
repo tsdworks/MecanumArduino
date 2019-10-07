@@ -19,6 +19,7 @@ struct MotorEncoderManager
     void (*EncoderISP)();
     volatile unsigned char pinEncoderPinA;
     volatile unsigned char pinEncoderPinB;
+    long motorPPR;
     bool motorLeft;
     volatile bool firstPulse;
     volatile unsigned long pulseCounter;
@@ -28,9 +29,9 @@ struct MotorEncoderManager
     volatile unsigned long lastSampleTime;
 };
 
-#define MotorState(x, y, a, b, c)                                                                \
+#define MotorState(x, y, a, b, c, d)                                                             \
     void y();                                                                                    \
-    struct MotorEncoderManager x = {y, a, b, c, 1, 0, 0, 0, 0, 0};                               \
+    struct MotorEncoderManager x = {y, a, b, c, d, 1, 0, 0, 0, 0, 0};                            \
     void y()                                                                                     \
     {                                                                                            \
         static bool currentDirection = true;                                                     \
@@ -55,24 +56,21 @@ struct MotorEncoderManager
 class Motor
 {
 private:
-    //Motor Left or Right
-    bool motorLeft;
     //Input Pins for Motor
     unsigned char pinDir;
     unsigned char pinPWM;
     //PID Control for Motor
     PIDControl *motorPID;
+
+public:
     //Motor Encoder Parameters
     struct MotorEncoderManager *motorEncoderManager;
 
-public:
-    long motorPPR;
-
     //Function Motor
     //Summary: Init Motor
-    //Input: pinDir, pinPWM, motorPPR, motorLeft, motorEncoderManager, motorPID
+    //Input: pinDir, pinPWM, motorEncoderManager, motorPID
     //Output: void
-    Motor(int _pinDir, int _pinPWM, long _motorPPR, bool _motorLeft,
+    Motor(int _pinDir, int _pinPWM,
           struct MotorEncoderManager *_motorEncoderManager, PIDControl *_motorPID);
 
     //Function SetPWM

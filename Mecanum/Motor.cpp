@@ -1,15 +1,13 @@
 #include "Motor.h"
 
-Motor::Motor(int _pinDir, int _pinPWM, long _motorPPR, bool _motorLeft,
+Motor::Motor(int _pinDir, int _pinPWM,
              struct MotorEncoderManager *_motorEncoderManager, PIDControl *_motorPID)
 {
     motorEncoderManager = _motorEncoderManager;
-    motorLeft = _motorLeft;
 
     //Setup Pins
     pinDir = _pinDir;
     pinPWM = _pinPWM;
-    motorPPR = _motorPPR;
     pinMode(pinDir, OUTPUT);
     pinMode(pinPWM, OUTPUT);
     pinMode(motorEncoderManager->pinEncoderPinA, INPUT);
@@ -30,14 +28,14 @@ Motor::Motor(int _pinDir, int _pinPWM, long _motorPPR, bool _motorLeft,
 
 void Motor::SetPWM(int pwmValue)
 {
-    digitalWrite(pinDir, pwmValue >= 0 ? motorLeft : !motorLeft);
+    digitalWrite(pinDir, pwmValue >= 0 ? motorEncoderManager->motorLeft : !motorEncoderManager->motorLeft);
     pwmValue = pwmValue < 0 ? -1 * pwmValue : pwmValue;
     analogWrite(pinPWM, pwmValue);
 }
 
 void Motor::SetSpeedRPM(int targetSpeed)
 {
-    SetSpeedPPS((int)((long)(targetSpeed * motorPPR) / SEC_PER_MIN));
+    SetSpeedPPS((int)((long)(targetSpeed * motorEncoderManager->motorPPR) / SEC_PER_MIN));
 }
 
 void Motor::SetSpeedPPS(int targetSpeed)
@@ -47,7 +45,7 @@ void Motor::SetSpeedPPS(int targetSpeed)
 
 int Motor::GetSpeedRPM()
 {
-    return (int)((long)(motorEncoderManager->motorSpeedPPS * SEC_PER_MIN / motorPPR));
+    return (int)((long)(motorEncoderManager->motorSpeedPPS * SEC_PER_MIN / motorEncoderManager->motorPPR));
 }
 
 int Motor::GetSpeedPPS()

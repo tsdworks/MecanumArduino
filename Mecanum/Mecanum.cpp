@@ -12,7 +12,7 @@ Movebase::Movebase(double _widthMM, double _lengthMM, double _wheelRadis,
     robotMotor3 = _robotMotor3;
     robotMotor4 = _robotMotor4;
     //Image that All Motors Are the Same
-    mms2PPS = robotMotor1->motorPPR * SQRT2 / wheelCir;
+    mms2PPS = robotMotor1->motorEncoderManager->motorPPR * SQRT2 / wheelCir;
 }
 
 void Movebase::Move(double _currentSpeedMMS, double _currentDirectionAngle)
