@@ -1,23 +1,23 @@
 #include "Motor.h"
 
-Motor::Motor(int _pinDir, int _pinPWM,
+Motor::Motor(int _pinDirA, int _pinDirB, int _pinPWM,
              struct MotorEncoderManager *_motorEncoderManager, PIDControl *_motorPID)
 {
     motorEncoderManager = _motorEncoderManager;
 
     //Setup Pins
-    pinDir = _pinDir;
+    pinDirA = _pinDirA;
+    pinDirB = _pinDirB;
     pinPWM = _pinPWM;
-    pinMode(pinDir, OUTPUT);
+    pinMode(pinDirA, OUTPUT);
+    pinMode(pinDirB, OUTPUT);
     pinMode(pinPWM, OUTPUT);
     pinMode(motorEncoderManager->pinEncoderPinA, INPUT);
     pinMode(motorEncoderManager->pinEncoderPinB, INPUT);
 
     //Attach Interrputs
-    if (motorEncoderManager->pinEncoderPinA == 2 || motorEncoderManager->pinEncoderPinA == 3)
-        attachInterrupt(motorEncoderManager->pinEncoderPinA - 2, motorEncoderManager->EncoderISP, CHANGE);
-    else
-        PCattachInterrupt(motorEncoderManager->pinEncoderPinA, motorEncoderManager->EncoderISP, CHANGE);
+    int pinToInterrupt = 0;
+    attachInterrupt(digitalPinToInterrupt(motorEncoderManager->pinEncoderPinA), motorEncoderManager->EncoderISP, CHANGE);
 
     //Setup PID Control
     motorPID = _motorPID;
@@ -28,7 +28,8 @@ Motor::Motor(int _pinDir, int _pinPWM,
 
 void Motor::SetPWM(int pwmValue)
 {
-    digitalWrite(pinDir, pwmValue >= 0 ? motorEncoderManager->motorLeft : !motorEncoderManager->motorLeft);
+    digitalWrite(pinDirA, pwmValue >= 0 ? motorEncoderManager->motorLeft : !motorEncoderManager->motorLeft);
+    digitalWrite(pinDirB, pwmValue >= 0 ? !motorEncoderManager->motorLeft : motorEncoderManager->motorLeft);
     pwmValue = pwmValue < 0 ? -1 * pwmValue : pwmValue;
     analogWrite(pinPWM, pwmValue);
 }
@@ -75,23 +76,23 @@ Motor &Motor::operator=(const int op)
     SetSpeedPPS(op);
 }
 
-void PostbackMotorDebugInfo(Motor &m1, Motor &m2, Motor &m3, Motor &m4, int timeInv)
+void PostbackMotorDebugInfo(HardwareSerial *currentSerial, Motor &m1, Motor &m2, Motor &m3, Motor &m4, int timeInv)
 {
     static long lastTime = 0;
     if (millis() - lastTime > timeInv)
     {
-        Serial.print("M1 ");
-        Serial.print(m1.GetSpeedRPM());
-        Serial.print(" ");
-        Serial.print("M2 ");
-        Serial.print(m2.GetSpeedRPM());
-        Serial.print(" ");
-        Serial.print("M3 ");
-        Serial.print(m3.GetSpeedRPM());
-        Serial.print(" ");
-        Serial.print("M4 ");
-        Serial.print(m4.GetSpeedRPM());
-        Serial.println(" ");
+        currentSerial->print("M1 ");
+        currentSerial->print(m1.GetSpeedRPM());
+        currentSerial->print(" ");
+        currentSerial->print("M2 ");
+        currentSerial->print(m2.GetSpeedRPM());
+        currentSerial->print(" ");
+        currentSerial->print("M3 ");
+        currentSerial->print(m3.GetSpeedRPM());
+        currentSerial->print(" ");
+        currentSerial->print("M4 ");
+        currentSerial->print(m4.GetSpeedRPM());
+        currentSerial->println(" ");
         lastTime = millis();
     }
 }

@@ -34,10 +34,10 @@ void Movebase::Move(double _currentSpeedXMMS, double _currentSpeedYMMS, double _
     currentSpeedXMMS = _currentSpeedXMMS;
     currentSpeedYMMS = _currentSpeedYMMS;
     currentRotateRADS = _currentRotateRADS;
-    currentWheel1SpeedMMS = currentSpeedXMMS + currentSpeedYMMS - currentRotateRADS * (halfWidthMM + halfLengthMM);
-    currentWheel2SpeedMMS = -currentSpeedXMMS + currentSpeedYMMS + currentRotateRADS * (halfWidthMM + halfLengthMM);
-    currentWheel3SpeedMMS = -currentSpeedXMMS + currentSpeedYMMS - currentRotateRADS * (halfWidthMM + halfLengthMM);
-    currentWheel4SpeedMMS = currentSpeedXMMS + currentSpeedYMMS + currentRotateRADS * (halfWidthMM + halfLengthMM);
+    currentWheel1SpeedMMS = currentSpeedXMMS - currentSpeedYMMS - currentRotateRADS * (halfWidthMM + halfLengthMM);
+    currentWheel2SpeedMMS = -currentSpeedXMMS - currentSpeedYMMS + currentRotateRADS * (halfWidthMM + halfLengthMM);
+    currentWheel3SpeedMMS = -currentSpeedXMMS - currentSpeedYMMS - currentRotateRADS * (halfWidthMM + halfLengthMM);
+    currentWheel4SpeedMMS = currentSpeedXMMS - currentSpeedYMMS + currentRotateRADS * (halfWidthMM + halfLengthMM);
     (*robotMotor1) = (int)(currentWheel1SpeedMMS * mms2PPS);
     (*robotMotor2) = (int)(currentWheel2SpeedMMS * mms2PPS);
     (*robotMotor3) = (int)(currentWheel3SpeedMMS * mms2PPS);

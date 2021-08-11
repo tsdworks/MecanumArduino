@@ -1,7 +1,10 @@
 #include "Wireless.h"
 
-WirelessSerial::WirelessSerial(char _streamStartSym, char _streamEndSym, char _streamFilSym)
+WirelessSerial::WirelessSerial(HardwareSerial *_currentSerial, long _baudRate, char _streamStartSym, char _streamEndSym, char _streamFilSym)
 {
+    currentSerial = _currentSerial;
+    baudRate = _baudRate;
+    currentSerial->begin(baudRate);
     streamStartSym = _streamStartSym;
     streamEndSym = _streamEndSym;
     streamFilSym = _streamFilSym;
@@ -32,9 +35,9 @@ int Str2Int(const char *dataStr, int startPos, int endPos)
 bool WirelessSerial::Handle()
 {
     bool retValue = false;
-    while (Serial.available() > 0)
+    while (currentSerial->available() > 0)
     {
-        char tempData = (char)Serial.read();
+        char tempData = (char)currentSerial->read();
         if (tempData == streamStartSym || streamPos >= STREAM_LENGTH)
         {
             streamPos = 0;

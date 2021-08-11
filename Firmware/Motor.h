@@ -7,8 +7,8 @@
 
 #define MICROS_PER_SEC 1000000L
 #define SEC_PER_MIN 60L
-#define LEFT_SIDE 1
-#define RIGHT_SIDE 0
+#define LEFT_SIDE true
+#define RIGHT_SIDE false
 
 struct MotorEncoderManager
 {
@@ -31,7 +31,7 @@ struct MotorEncoderManager
 
 #define MotorState(x, y, a, b, c, d)                                                             \
     void y();                                                                                    \
-    struct MotorEncoderManager x = {y, a, b, c, d, 1, 0, 0, 0, 0, 0};                            \
+    struct MotorEncoderManager x = {y, a, b, c, d, true, 0, 0, 0, 0, 0};                            \
     void y()                                                                                     \
     {                                                                                            \
         static bool currentDirection = true;                                                     \
@@ -57,7 +57,8 @@ class Motor
 {
 private:
     //Input Pins for Motor
-    unsigned char pinDir;
+    unsigned char pinDirA;
+    unsigned char pinDirB;
     unsigned char pinPWM;
     //PID Control for Motor
     PIDControl *motorPID;
@@ -70,7 +71,7 @@ public:
     //Summary: Init Motor
     //Input: pinDir, pinPWM, motorEncoderManager, motorPID
     //Output: void
-    Motor(int _pinDir, int _pinPWM,
+    Motor(int _pinDirA, int _pinDirB, int _pinPWM,
           struct MotorEncoderManager *_motorEncoderManager, PIDControl *_motorPID);
 
     //Function SetPWM
@@ -119,6 +120,6 @@ public:
 //Input: Motor1, Motor2, Motor3, Motor4, timeInv
 //Output: void
 //Attention: Must Binding in Loop
-void PostbackMotorDebugInfo(Motor &m1, Motor &m2, Motor &m3, Motor &m4, int timeInv);
+void PostbackMotorDebugInfo(HardwareSerial *currentSerial, Motor &m1, Motor &m2, Motor &m3, Motor &m4, int timeInv);
 
 #endif

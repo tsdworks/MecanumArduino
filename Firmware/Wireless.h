@@ -9,6 +9,8 @@
 class WirelessSerial
 {
 private:
+    HardwareSerial *currentSerial;
+    long baudRate;
     char streamStartSym;
     char streamEndSym;
     char streamFilSym;
@@ -22,7 +24,7 @@ public:
     //Summary: Init WirelessSerial
     //Input: streamStartSym, streamEndSym, streamFilSym
     //Output: void
-    WirelessSerial(char _streamStartSym, char _streamEndSym, char _streamFilSym);
+    WirelessSerial(HardwareSerial *_currentSerial, long _baudRate, char _streamStartSym, char _streamEndSym, char _streamFilSym);
 
     //Function: Handle
     //Summary: If Have Recieved a Stream Pack
